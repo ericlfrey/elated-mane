@@ -3,7 +3,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from django.contrib.auth.models import User
-
+from maneapi.models import Equipment
 """
 Users (un:pwd)
 -----------------
@@ -56,8 +56,16 @@ class StylistView(ViewSet):
         return Response(serialized.data)
 
 
+class StylistToolsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipment
+        fields = ('id', 'tool_type', 'manufacturer')
+
+
 class StylistSerializer(serializers.ModelSerializer):
     """JSON serializer for stylist creator"""
+
+    tools = StylistToolsSerializer(many=True)
 
     class Meta:
         model = User
@@ -67,5 +75,6 @@ class StylistSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'username',
-            'customers'
+            'customers',
+            'tools'
         )
