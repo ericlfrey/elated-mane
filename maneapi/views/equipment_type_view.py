@@ -55,14 +55,22 @@ class EquipmentTypeView(ViewSet):
         equipment_type.label = label
         equipment_type.save()
 
-        serialized = EquipmentTypeSerializer( equipment_type)
+        serialized = EquipmentTypeSerializer(equipment_type)
         return Response(serialized.data, status=status.HTTP_201_CREATED)
+
+
+class CurrentEquipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipment
+        fields = ('id', 'manufacturer', 'cost', 'purchase_date')
 
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
     """JSON serializer for equipmentType creator"""
 
+    current_equipment = CurrentEquipmentSerializer(many=True)
+
     class Meta:
         """JSON serializer for equipmentType creator"""
         model = EquipmentType
-        fields = ( 'id', 'label', )
+        fields = ('id', 'label', 'current_equipment')
